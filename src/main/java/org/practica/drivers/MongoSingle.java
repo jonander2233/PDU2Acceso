@@ -20,10 +20,11 @@ public class MongoSingle {
     private static String routeKey = "src" + File.separator + "main" +File.separator+ "resources" +File.separator+ "key";
     private static String DB_NAME = "", MONGO_USER = "",MONGO_PASSWORD_ENCRYPTED = "",MONGO_PASSWORD = "",MONGO_PORT = "";
     private static SecretKey MONGO_DECRYPT_KEY;
-    private static int PORT = 0;
+    private static String MONGO_HOST = "localhost";
     private static MongoSingle instance;
     private static String url = "";
     private Properties prop = null;
+
     private MongoClient dbClient;
     private MongoDatabase database;
 
@@ -35,7 +36,8 @@ public class MongoSingle {
         MONGO_PORT = prop.getProperty("mongo_port");
         MONGO_DECRYPT_KEY = PasswordEncryption.loadKeyFromFile(routeKey,"AES");
         MONGO_PASSWORD = PasswordEncryption.decrypt(MONGO_PASSWORD_ENCRYPTED,MONGO_DECRYPT_KEY);
-        String uri = MONGO_USER + MONGO_PASSWORD + "localhost." + MONGO_PORT +"/"+DB_NAME;
+        MONGO_HOST = prop.getProperty("host");
+        String uri = MONGO_USER + MONGO_PASSWORD + MONGO_HOST +"." + MONGO_PORT +"/"+DB_NAME;
 
         dbClient = new MongoClient();
         database = dbClient.getDatabase(DB_NAME);

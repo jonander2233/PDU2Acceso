@@ -10,10 +10,10 @@ import java.sql.SQLException;
 public class SQLPoiDAO implements CRUDInterfacePoi {
     private static Connection connection;
     private static SQLPoiDAO instance;
-    private SQLPoiDAO() throws SQLException {
+    private SQLPoiDAO() throws Exception {
         connection = JDBCSingle.getConnection();
     }
-    public static SQLPoiDAO getInstance() throws SQLException {
+    public static SQLPoiDAO getInstance() throws Exception {
         if(instance == null){
             return new SQLPoiDAO();
         }
