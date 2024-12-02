@@ -8,21 +8,21 @@ import org.practica.drivers.MongoSingle;
 import org.practica.intefaces.CRUDInterfacePoi;
 import org.practica.models.Poi;
 
-public class PoiDAO implements CRUDInterfacePoi {
+public class MongoPoiDAO implements CRUDInterfacePoi {
     private MongoSingle ms;
     private MongoDatabase md;
-    private static PoiDAO instance;
+    private static MongoPoiDAO instance;
     private MongoClient mc;
     MongoCollection<Document> col;
 
-    private PoiDAO() {
+    private MongoPoiDAO() {
         ms = MongoSingle.getInstance();
         md = ms.getDb();
         col = md.getCollection("jaap");
     }
-    public static PoiDAO getInstance(){
+    public static MongoPoiDAO getInstance(){
         if(instance == null){
-            instance = new PoiDAO();
+            instance = new MongoPoiDAO();
         }
         return instance;
     }
