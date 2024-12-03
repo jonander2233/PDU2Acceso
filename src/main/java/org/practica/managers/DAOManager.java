@@ -1,54 +1,113 @@
 package org.practica.managers;
 
-import org.practica.DAO.DAO;
 import org.practica.DAO.MongoPoiDAO;
 import org.practica.DAO.SQLPoiDAO;
 import org.practica.intefaces.CRUDInterfacePoi;
 import org.practica.models.Poi;
 
-public class DAOManager implements CRUDInterfacePoi {
-    private DAO currentDAO;
-    private DAOManager instance;
+import java.util.ArrayList;
+
+public class DAOManager implements CRUDInterfacePoi{
+    private CRUDInterfacePoi currentDAO;
+    private static DAOManager instance;
+
     private DAOManager() {
         currentDAO = MongoPoiDAO.getInstance();
     }
-    public DAOManager getInstance() {
+
+    public static DAOManager getInstance() {
         if (instance == null) {
             instance = new DAOManager();
         }
         return instance;
     }
-    public void changedb() throws Exception {
-        if(currentDAO instanceof MongoPoiDAO){
-            currentDAO = SQLPoiDAO.getInstance();
-        }else{
+
+    public void changedb() {
+        if (currentDAO instanceof MongoPoiDAO) {
+            try {
+                currentDAO = SQLPoiDAO.getInstance();
+            } catch (Exception e) {
+                System.out.println("SQL database not available");
+                currentDAO = MongoPoiDAO.getInstance();
+            }
+        } else {
             currentDAO = MongoPoiDAO.getInstance();
         }
     }
+
     public void syncFromCurrentdb() {
-//        if(currentDAO instanceof MongoPoiDAO){
-//            currentDAO = SQLPoiDAO.getInstance();
-//        }else{
-//            currentDAO = MongoPoiDAO.getInstance();
-//        }
     }
-    @Override
-    public boolean createPoi() {
-        return currentDAO.createPoi();
+
+    public String getUsingDB() {
+        if (currentDAO instanceof MongoPoiDAO) {
+            return "MongoDB";
+        }
+        return "SQL";
     }
 
     @Override
-    public Poi readPoi() {
-        return currentDAO.readPoi();
+    public int countElements() {
+        return 0;
     }
 
     @Override
-    public boolean updatePoi() {
-        return currentDAO.updatePoi();
+    public boolean addPoi(Poi poi) {
+        return false;
     }
 
     @Override
-    public boolean deletePoi() {
-        return currentDAO.deletePoi();
+    public ArrayList<Poi> listAll() {
+        return null;
+    }
+
+    @Override
+    public Poi listOneById(int id) {
+        return null;
+    }
+
+    @Override
+    public ArrayList<Poi> listByIDRange(int start, int end) {
+        return null;
+    }
+
+    @Override
+    public ArrayList<Poi> listByMonthModification(int month) {
+        return null;
+    }
+
+    @Override
+    public ArrayList<Poi> listByCity(String city) {
+        return null;
+    }
+
+    @Override
+    public boolean updatePoiByID(Poi poi) {
+        return false;
+    }
+
+    @Override
+    public int deleteAll(boolean confirm) {
+        return 0;
+    }
+
+    @Override
+    public int deletePoiByID(int id, boolean confirm) {
+        return 0;
+    }
+
+    @Override
+    public int deleteByIDRange(int start, int end, boolean confirm) {
+        return 0;
+    }
+
+    @Override
+    public int deleteByMonthModification(int month, boolean confirm) {
+        return 0;
+    }
+
+    @Override
+    public int deleteByCity(String city, boolean confirm) {
+        return 0;
     }
 }
+

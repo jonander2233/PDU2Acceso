@@ -42,4 +42,16 @@ public class Poi {
     public Date getUpdateDate() {
         return updateDate;
     }
+
+    @Override
+    public String toString() {
+        return "Poi{" +
+                "poiId=" + poiId +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", city='" + city + '\'' +
+                ", description='" + description + '\'' +
+                ", updateDate=" + updateDate +
+                '}';
+    }
 }
