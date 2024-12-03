@@ -8,7 +8,7 @@ import org.practica.drivers.MongoSingle;
 import org.practica.intefaces.CRUDInterfacePoi;
 import org.practica.models.Poi;
 
-public class MongoPoiDAO implements CRUDInterfacePoi {
+public class MongoPoiDAO extends DAO {
     private MongoSingle ms;
     private MongoDatabase md;
     private static MongoPoiDAO instance;

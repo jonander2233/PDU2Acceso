@@ -7,7 +7,7 @@ import org.practica.models.Poi;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class SQLPoiDAO implements CRUDInterfacePoi {
+public class SQLPoiDAO extends DAO {
     private static Connection connection;
     private static SQLPoiDAO instance;
     private SQLPoiDAO() throws Exception {
