@@ -37,7 +37,7 @@ public class MongoSingle {
         MONGO_DECRYPT_KEY = PasswordEncryption.loadKeyFromFile(routeKey,"AES");
         MONGO_PASSWORD = PasswordEncryption.decrypt(MONGO_PASSWORD_ENCRYPTED,MONGO_DECRYPT_KEY);
         MONGO_HOST = prop.getProperty("host");
-        String uri = MONGO_USER + MONGO_PASSWORD + MONGO_HOST +"." + MONGO_PORT +"/"+DB_NAME;
+        url = MONGO_USER + MONGO_PASSWORD + MONGO_HOST +"." + MONGO_PORT +"/"+DB_NAME;
 
         dbClient = new MongoClient();
         database = dbClient.getDatabase(DB_NAME);
@@ -60,6 +60,10 @@ public class MongoSingle {
     public MongoDatabase getDb(){
         return database;
     }
+
+//    public boolean closeConection(){
+//
+//    }
     private static Properties getProperties(String ruta) throws IOException {
         File archivo = new File(ruta);
         boolean existe = archivo.exists();
