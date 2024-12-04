@@ -19,6 +19,10 @@ public class Poi {
         this.updateDate = updateDate;
     }
 
+    public void setPoiId(int poiId) {
+        this.poiId = poiId;
+    }
+
     public int getPoiId() {
         return poiId;
     }
