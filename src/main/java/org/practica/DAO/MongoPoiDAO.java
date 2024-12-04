@@ -9,6 +9,7 @@ import org.practica.intefaces.CRUDInterfacePoi;
 import org.practica.models.Poi;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MongoPoiDAO implements CRUDInterfacePoi {
     private MongoSingle ms;
@@ -17,12 +18,12 @@ public class MongoPoiDAO implements CRUDInterfacePoi {
     private MongoClient mc;
     MongoCollection<Document> col;
 
-    private MongoPoiDAO()  {
+    private MongoPoiDAO() throws Exception {
         ms = MongoSingle.getInstance();
         md = ms.getDb();
         col = md.getCollection("jaap");
     }
-    public static MongoPoiDAO getInstance()  {
+    public static MongoPoiDAO getInstance() throws Exception {
         if(instance == null){
             instance = new MongoPoiDAO();
         }
@@ -37,6 +38,11 @@ public class MongoPoiDAO implements CRUDInterfacePoi {
 
     @Override
     public boolean addPoi(Poi poi) {
+        Poi doc = listOneById(poi.getPoiId());
+        if(doc == null){
+//            col.insertOne(poi.getDocument());
+            return true;
+        }
         return false;
     }
 
@@ -47,7 +53,19 @@ public class MongoPoiDAO implements CRUDInterfacePoi {
 
     @Override
     public Poi listOneById(int id) {
-        return null;
+        Document query = new Document("PoiID", id);
+        Document poiDoc = col.find(query).first();
+        if(poiDoc == null){
+            return null;
+        }
+        int id1 = poiDoc.getInteger("poiDocId");
+        double latitude = poiDoc.getDouble("latitude");
+        double longitude = poiDoc.getDouble("longitude");
+        String city = poiDoc.getString("city");
+        String country = poiDoc.getString("country");
+        String description = poiDoc.getString("description");
+        Date updateDate = poiDoc.getDate("updateDate");
+        return new Poi(id1,latitude,longitude,country,city,description,updateDate);
     }
 
     @Override
@@ -93,5 +111,17 @@ public class MongoPoiDAO implements CRUDInterfacePoi {
     @Override
     public int deleteByCity(String city, boolean confirm) {
         return 0;
+    }
+    private void poiToDocument(Poi poi){
+        Document poiDoc = new Document("poiID",poi.getPoiId());
+        if(poi.getCity() != "")
+            poiDoc.append("latitude",poi.getLatitude());
+//        if(poi.getLongitude() != "")
+
+
+
+
+
+//        return new Document("poiID",this.poiId).append("latitude",this.latitude).append("longitude",this.longitude).append("city",this.city).append("description",this.description).append("updateDate",this.updateDate);
     }
 }

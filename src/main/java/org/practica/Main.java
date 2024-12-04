@@ -2,6 +2,7 @@ package org.practica;
 
 import org.jonander2233.lib_personal.Eys;
 import org.jonander2233.lib_personal.Menu;
+
 import org.practica.DAO.MongoPoiDAO;
 import org.practica.managers.DAOManager;
 import org.practica.models.Poi;
@@ -12,8 +13,10 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Main {
-    private static DAOManager dm = DAOManager.getInstance();
+    private static DAOManager dm;
     public static void main(String[] args) {
+        System.out.println("Connecting to database, please wait...");
+        dm = DAOManager.getInstance();
         boolean exit = false;
         Menu.cambiarIdioma("en","EN");
         Eys.cambiarIdioma("en","EN");
@@ -25,6 +28,7 @@ public class Main {
                     exit = true;
                     break;
                 case 1:
+                    System.out.println("Trying to connect to: " + dm.getNotUsingDB());
                     dm.changedb();
                     break;
                 case 2:
@@ -54,7 +58,11 @@ public class Main {
                     back = true;
                     break;
                 case 1:
-                    pois = dm.listAll();
+                    try {
+                        pois = dm.listAll();
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
                     for (Poi poi:pois) {
                         System.out.println(poi);
                         continuetext();
@@ -110,14 +118,14 @@ public class Main {
         do{
             int id = Eys.imprimirYLeerInt("Poi id: type 0 to exit",0 , Integer.MAX_VALUE);
             if(id != 0 ){
-                double latitude = Eys.imprimirYLeerDouble("Poi latitude");
-                double longitude = Eys.imprimirYLeerDouble("Poi longitude");
+                Double latitude = Eys.imprimirYLeerDouble("Poi latitude");
+                Double longitude = Eys.imprimirYLeerDouble("Poi longitude");
                 String country = Eys.imprimirYLeer("Poi Country",0,50);
                 String city = Eys.imprimirYLeer("Poi city",0,50);
 
                 Date date = Eys.imprimirYLeerDate("Poi last updated:");
                 String description = Eys.imprimirYLeer("Poi description:",0,Integer.MAX_VALUE);
-                Poi poi = new Poi(id,latitude,longitude,city,description,date);
+                Poi poi = new Poi(id,latitude,longitude,country,city,description,date);
                 System.out.println(poi.toString());
 
                 boolean add = Eys.ImprimirYleerCharSN("Confirm insertion?");

@@ -3,8 +3,11 @@ package org.practica.DAO;
 import org.practica.drivers.JDBCSingle;
 import org.practica.intefaces.CRUDInterfacePoi;
 import org.practica.models.Poi;
+import org.practica.utils.Transformer;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -16,24 +19,35 @@ public class SQLPoiDAO implements CRUDInterfacePoi {
     }
     public static SQLPoiDAO getInstance() throws Exception {
         if(instance == null){
-            return new SQLPoiDAO();
+            instance =  new SQLPoiDAO();
         }
         return instance;
     }
 
     @Override
-    public int countElements() {
-        return 0;
+    public int countElements() throws SQLException {
+        return listAll().size();
     }
 
     @Override
-    public boolean addPoi(Poi poi) {
+    public boolean addPoi(Poi poi) throws SQLException {
+        String sql = "INSERT INTO jaap (PoiID,latitude,longitude,city,description,updateDate) VALUES (?, ?, ?, ?, ?, ?)";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setInt(1,poi.getPoiId());
+        statement.setDouble(2,poi.getLatitude());
+        statement.setDouble(3,poi.getLongitude());
+        statement.setString(4,poi.getCity());
+        statement.setString(5,poi.getDescription());
+        statement.setDate(6, Transformer.javaDateToSQLDate(poi.getUpdateDate()));
         return false;
     }
 
     @Override
-    public ArrayList<Poi> listAll() {
-        return null;
+    public ArrayList<Poi> listAll() throws SQLException {
+        String sql = "SELECT * FROM jaap order by PoiID";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        ResultSet res = statement.executeQuery();
+        return getResult(res);
     }
 
     @Override
@@ -84,5 +98,13 @@ public class SQLPoiDAO implements CRUDInterfacePoi {
     @Override
     public int deleteByCity(String city, boolean confirm) {
         return 0;
+    }
+    private static ArrayList<Poi> getResult(ResultSet res) throws SQLException {
+        ArrayList<Poi> pois = new ArrayList<>();
+        while (res.next()){
+            Poi poi = new Poi(res.getInt("PoiID"),res.getDouble("latitude"),res.getDouble("longitude"),res.getString("country"),res.getString("city"),res.getString("description"),res.getDate("updateDate"));
+            pois.add(poi);
+        }
+        return pois;
     }
 }

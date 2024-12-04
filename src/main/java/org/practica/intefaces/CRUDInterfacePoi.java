@@ -2,13 +2,14 @@ package org.practica.intefaces;
 
 import org.practica.models.Poi;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public interface CRUDInterfacePoi {
-    int countElements();
-    boolean addPoi(Poi poi);
+    int countElements() throws SQLException;
+    boolean addPoi(Poi poi) throws SQLException;
 
-    ArrayList<Poi> listAll();
+    ArrayList<Poi> listAll() throws SQLException;
     Poi listOneById(int id);
     ArrayList<Poi> listByIDRange(int start, int end);
     ArrayList<Poi> listByMonthModification(int month);

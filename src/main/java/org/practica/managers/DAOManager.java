@@ -5,6 +5,7 @@ import org.practica.DAO.SQLPoiDAO;
 import org.practica.intefaces.CRUDInterfacePoi;
 import org.practica.models.Poi;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class DAOManager implements CRUDInterfacePoi{
@@ -18,8 +19,10 @@ public class DAOManager implements CRUDInterfacePoi{
             currentDAO = MongoPoiDAO.getInstance();
         } catch (Exception e) {
             mongoAviable = false;
+            System.out.println("Mongo database is unaviable trying to connect to SQL database");
             try {
                 currentDAO = SQLPoiDAO.getInstance();
+                System.out.println("connected to SQL database");
             } catch (Exception ex) {
                 sqlAviable = false;
             }
@@ -42,7 +45,7 @@ public class DAOManager implements CRUDInterfacePoi{
             try {
                 currentDAO = SQLPoiDAO.getInstance();
             } catch (Exception e) {
-                System.out.println("SQL database not available");
+                System.out.println("SQL database is not available");
                 try {
                     currentDAO = MongoPoiDAO.getInstance();
                 } catch (Exception ex) {
@@ -72,20 +75,30 @@ public class DAOManager implements CRUDInterfacePoi{
         }
         return "SQL";
     }
+    public String getNotUsingDB(){
+        if (currentDAO instanceof SQLPoiDAO) {
+            return "MongoDB";
+        }
+        return "SQL";
+    }
 
     @Override
-    public int countElements() {
-        return 0;
+    public int countElements() throws SQLException {
+        return currentDAO.countElements();
     }
 
     @Override
     public boolean addPoi(Poi poi) {
-        return false;
+        try {
+            return currentDAO.addPoi(poi);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public ArrayList<Poi> listAll() {
-        return null;
+    public ArrayList<Poi> listAll() throws SQLException {
+        return currentDAO.listAll();
     }
 
     @Override

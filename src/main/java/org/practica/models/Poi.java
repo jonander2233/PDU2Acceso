@@ -1,5 +1,7 @@
 package org.practica.models;
 
+import org.bson.Document;
+
 import java.util.Date;
 
 public class Poi {
@@ -7,10 +9,11 @@ public class Poi {
     private Double latitude;
     private Double longitude;
     private String city;
+    private String country;
     private String description;
     private Date updateDate;
 
-    public Poi(int poiId, Double latitude, Double longitude, String city, String description, Date updateDate) {
+    public Poi(int poiId, Double latitude, Double longitude,String country, String city, String description, Date updateDate) {
         this.poiId = poiId;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -46,6 +49,7 @@ public class Poi {
     public Date getUpdateDate() {
         return updateDate;
     }
+
 
     @Override
     public String toString() {

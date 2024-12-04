@@ -1,14 +1,20 @@
 package org.practica.drivers;
 
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientURI;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.ServerAddress;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+
+import java.util.Collections;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.crypto.SecretKey;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.Connection;
 import java.util.Properties;
 
 import org.bson.Document;
@@ -25,10 +31,10 @@ public class MongoSingle {
     private static String url = "";
     private Properties prop = null;
 
-    private MongoClientURI dbClient;
+    private MongoClient dbClient;
     private MongoDatabase database;
 
-    private MongoSingle()  {
+    private MongoSingle()  throws Exception{
         try {
             this.prop = getProperties(routeProperties);
             DB_NAME = prop.getProperty("dbName");
@@ -43,14 +49,14 @@ public class MongoSingle {
         MONGO_HOST = prop.getProperty("host");
         url = "mongodb://" + MONGO_USER +":"+ MONGO_PASSWORD +"@"+ MONGO_HOST +":" + MONGO_PORT +"/"+DB_NAME;
 
-        dbClient = new MongoClientURI(url);
-//        dbClient.getDatabase("test").listCollectionNames().first();
-//        database = dbClient.getDatabase(DB_NAME);
-//        database = dbClient.getDatabase();
-
+        Logger mongoLogger = Logger.getLogger("org.mongodb.driver");
+        mongoLogger.setLevel(Level.OFF);
+        dbClient = MongoClients.create(url);
+        database = dbClient.getDatabase("jaap");
+        database.runCommand(new Document("ping", 1));
     }
 
-    public static MongoSingle getInstance()  {
+    public static MongoSingle getInstance() throws Exception {
         if(instance == null){
             return new MongoSingle();
         }
