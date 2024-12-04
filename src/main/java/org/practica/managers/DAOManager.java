@@ -10,9 +10,24 @@ import java.util.ArrayList;
 public class DAOManager implements CRUDInterfacePoi{
     private CRUDInterfacePoi currentDAO;
     private static DAOManager instance;
+    private static boolean mongoAviable = true;
+    private static boolean sqlAviable = true;
 
     private DAOManager() {
-        currentDAO = MongoPoiDAO.getInstance();
+        try {
+            currentDAO = MongoPoiDAO.getInstance();
+        } catch (Exception e) {
+            mongoAviable = false;
+            try {
+                currentDAO = SQLPoiDAO.getInstance();
+            } catch (Exception ex) {
+                sqlAviable = false;
+            }
+        }
+        if(!sqlAviable && !mongoAviable){
+            throw new RuntimeException("Could not connect to any database");
+        }
+
     }
 
     public static DAOManager getInstance() {
@@ -28,10 +43,23 @@ public class DAOManager implements CRUDInterfacePoi{
                 currentDAO = SQLPoiDAO.getInstance();
             } catch (Exception e) {
                 System.out.println("SQL database not available");
-                currentDAO = MongoPoiDAO.getInstance();
+                try {
+                    currentDAO = MongoPoiDAO.getInstance();
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         } else {
-            currentDAO = MongoPoiDAO.getInstance();
+            try {
+                currentDAO = MongoPoiDAO.getInstance();
+            } catch (Exception e) {
+                System.out.println("Mongo database not available");
+                try {
+                    currentDAO = SQLPoiDAO.getInstance();
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
         }
     }
 

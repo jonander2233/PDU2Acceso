@@ -1,7 +1,7 @@
 package org.practica.drivers;
 
 import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
+import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoDatabase;
 
 import javax.crypto.SecretKey;
@@ -25,31 +25,34 @@ public class MongoSingle {
     private static String url = "";
     private Properties prop = null;
 
-    private MongoClient dbClient;
+    private MongoClientURI dbClient;
     private MongoDatabase database;
 
-    private MongoSingle() throws Exception {
-        this.prop = getProperties(routeProperties);
-        DB_NAME = prop.getProperty("dbName");
-        MONGO_USER = prop.getProperty("mongo_user");
-        MONGO_PASSWORD_ENCRYPTED = prop.getProperty("mongo_password");
-        MONGO_PORT = prop.getProperty("mongo_port");
-        MONGO_DECRYPT_KEY = PasswordEncryption.loadKeyFromFile(routeKey,"AES");
-        MONGO_PASSWORD = PasswordEncryption.decrypt(MONGO_PASSWORD_ENCRYPTED,MONGO_DECRYPT_KEY);
+    private MongoSingle()  {
+        try {
+            this.prop = getProperties(routeProperties);
+            DB_NAME = prop.getProperty("dbName");
+            MONGO_USER = prop.getProperty("mongo_user");
+            MONGO_PASSWORD_ENCRYPTED = prop.getProperty("mongo_password");
+            MONGO_PORT = prop.getProperty("mongo_port");
+            MONGO_DECRYPT_KEY = PasswordEncryption.loadKeyFromFile(routeKey,"AES");
+            MONGO_PASSWORD = PasswordEncryption.decrypt(MONGO_PASSWORD_ENCRYPTED,MONGO_DECRYPT_KEY);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         MONGO_HOST = prop.getProperty("host");
         url = "mongodb://" + MONGO_USER +":"+ MONGO_PASSWORD +"@"+ MONGO_HOST +":" + MONGO_PORT +"/"+DB_NAME;
 
-        dbClient = new MongoClient();
-        database = dbClient.getDatabase(DB_NAME);
+        dbClient = new MongoClientURI(url);
+//        dbClient.getDatabase("test").listCollectionNames().first();
+//        database = dbClient.getDatabase(DB_NAME);
+//        database = dbClient.getDatabase();
+
     }
 
-    public static MongoSingle getInstance(){
+    public static MongoSingle getInstance()  {
         if(instance == null){
-            try {
-                return new MongoSingle();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            return new MongoSingle();
         }
         return instance;
     }

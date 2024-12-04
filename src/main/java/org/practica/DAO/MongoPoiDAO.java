@@ -17,12 +17,12 @@ public class MongoPoiDAO implements CRUDInterfacePoi {
     private MongoClient mc;
     MongoCollection<Document> col;
 
-    private MongoPoiDAO() {
+    private MongoPoiDAO()  {
         ms = MongoSingle.getInstance();
         md = ms.getDb();
         col = md.getCollection("jaap");
     }
-    public static MongoPoiDAO getInstance(){
+    public static MongoPoiDAO getInstance()  {
         if(instance == null){
             instance = new MongoPoiDAO();
         }
