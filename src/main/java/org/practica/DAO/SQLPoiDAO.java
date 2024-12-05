@@ -31,14 +31,45 @@ public class SQLPoiDAO implements CRUDInterfacePoi {
 
     @Override
     public boolean addPoi(Poi poi) throws SQLException {
-        String sql = "INSERT INTO jaap (PoiID,latitude,longitude,city,description,updateDate) VALUES (?, ?, ?, ?, ?, ?)";
-        PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setInt(1,poi.getPoiId());
-        statement.setDouble(2,poi.getLatitude());
-        statement.setDouble(3,poi.getLongitude());
-        statement.setString(4,poi.getCity());
-        statement.setString(5,poi.getDescription());
-        statement.setDate(6, Transformer.javaDateToSQLDate(poi.getUpdateDate()));
+        Poi poi1 = listOneById(poi.getPoiId());
+        if(poi1 == null){
+            String sql = "INSERT INTO jaap (PoiID,latitude,longitude,city,country,description,updateDate) VALUES (?, ?, ?, ?, ?, ? ,?)";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1,poi.getPoiId());
+            if(poi.getLatitude() == null){
+                statement.setNull(2,java.sql.Types.DOUBLE);
+            } else {
+                statement.setDouble(2,poi.getLatitude());
+            }
+            if(poi.getLongitude() == null){
+                statement.setNull(3,java.sql.Types.DOUBLE);
+            } else {
+                statement.setDouble(3,poi.getLongitude());
+            }
+            if (poi.getCity() == null || poi.getCity().isEmpty()) {
+                statement.setNull(4, java.sql.Types.VARCHAR);
+            } else {
+                statement.setString(4, poi.getCity());
+            }
+            if (poi.getCountry() == null || poi.getCountry().isEmpty()) {
+                statement.setNull(5, java.sql.Types.VARCHAR);
+            } else {
+                statement.setString(5, poi.getCountry());
+            }
+            if (poi.getDescription() == null || poi.getDescription().isEmpty()) {
+                statement.setNull(6, java.sql.Types.VARCHAR);
+            } else {
+                statement.setString(6, poi.getDescription());
+            }
+            if (poi.getUpdateDate() == null) {
+                statement.setNull(7, java.sql.Types.DATE);
+            } else {
+                statement.setDate(7, Transformer.javaDateToSQLDate(poi.getUpdateDate()));
+            }
+            statement.execute();
+            statement.close();
+            return true;
+        }
         return false;
     }
 
@@ -47,17 +78,35 @@ public class SQLPoiDAO implements CRUDInterfacePoi {
         String sql = "SELECT * FROM jaap order by PoiID";
         PreparedStatement statement = connection.prepareStatement(sql);
         ResultSet res = statement.executeQuery();
-        return getResult(res);
+        ArrayList<Poi> pois = getResult(res);
+        statement.close();
+        return pois;
     }
 
     @Override
-    public Poi listOneById(int id) {
-        return null;
+    public Poi listOneById(int id) throws SQLException {
+        String sql = "SELECT * FROM jaap WHERE PoiID = (?)";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setInt(1,id);
+        ResultSet res = statement.executeQuery();
+        ArrayList<Poi> poi = getResult(res);
+        if(poi.isEmpty()){
+            return null;
+        }
+        statement.close();
+        return poi.getFirst();
     }
 
     @Override
-    public ArrayList<Poi> listByIDRange(int start, int end) {
-        return null;
+    public ArrayList<Poi> listByIDRange(int start, int end) throws SQLException {
+        String sql = "SELECT * FROM jaap WHERE PoiID BETWEEN ? AND ?;";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setInt(1,start);
+        statement.setInt(2,end);
+        ResultSet res = statement.executeQuery();
+        ArrayList<Poi> pois = getResult(res);
+        statement.close();
+        return pois;
     }
 
     @Override
@@ -66,8 +115,14 @@ public class SQLPoiDAO implements CRUDInterfacePoi {
     }
 
     @Override
-    public ArrayList<Poi> listByCity(String city) {
-        return null;
+    public ArrayList<Poi> listByCity(String city) throws SQLException {
+        String sql = "SELECT * FROM jaap WHERE author LIKE ?;";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1,"%" + city + "%");
+        ResultSet res = statement.executeQuery();
+        ArrayList<Poi> pois = getResult(res);
+        statement.close();
+        return pois;
     }
 
     @Override
@@ -76,8 +131,17 @@ public class SQLPoiDAO implements CRUDInterfacePoi {
     }
 
     @Override
-    public int deleteAll(boolean confirm) {
-        return 0;
+    public int deleteAll(boolean confirm) throws SQLException {
+        int rowsDeleted;
+        if(confirm){
+            String sql = "DELETE FROM jaap;";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            rowsDeleted = statement.executeUpdate();
+            statement.close();
+        }else {
+            rowsDeleted = listAll().size();
+        }
+        return rowsDeleted;
     }
 
     @Override
@@ -105,6 +169,7 @@ public class SQLPoiDAO implements CRUDInterfacePoi {
             Poi poi = new Poi(res.getInt("PoiID"),res.getDouble("latitude"),res.getDouble("longitude"),res.getString("country"),res.getString("city"),res.getString("description"),res.getDate("updateDate"));
             pois.add(poi);
         }
+        res.close();
         return pois;
     }
 }

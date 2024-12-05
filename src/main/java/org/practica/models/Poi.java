@@ -26,6 +26,10 @@ public class Poi {
         this.poiId = poiId;
     }
 
+    public String getCountry() {
+        return country;
+    }
+
     public int getPoiId() {
         return poiId;
     }

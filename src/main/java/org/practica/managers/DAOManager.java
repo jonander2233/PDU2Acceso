@@ -102,53 +102,53 @@ public class DAOManager implements CRUDInterfacePoi{
     }
 
     @Override
-    public Poi listOneById(int id) {
-        return null;
+    public Poi listOneById(int id) throws SQLException {
+        return currentDAO.listOneById(id);
     }
 
     @Override
-    public ArrayList<Poi> listByIDRange(int start, int end) {
-        return null;
+    public ArrayList<Poi> listByIDRange(int start, int end) throws SQLException {
+        return currentDAO.listByIDRange(start,end);
     }
 
     @Override
     public ArrayList<Poi> listByMonthModification(int month) {
-        return null;
+        return currentDAO.listByMonthModification(month);
     }
 
     @Override
-    public ArrayList<Poi> listByCity(String city) {
-        return null;
+    public ArrayList<Poi> listByCity(String city) throws SQLException {
+        return currentDAO.listByCity(city);
     }
 
     @Override
     public boolean updatePoiByID(Poi poi) {
-        return false;
+        return currentDAO.updatePoiByID(poi);
     }
 
     @Override
-    public int deleteAll(boolean confirm) {
-        return 0;
+    public int deleteAll(boolean confirm) throws SQLException {
+        return currentDAO.deleteAll(confirm);
     }
 
     @Override
     public int deletePoiByID(int id, boolean confirm) {
-        return 0;
+        return deletePoiByID(id,confirm);
     }
 
     @Override
     public int deleteByIDRange(int start, int end, boolean confirm) {
-        return 0;
+        return currentDAO.deleteByIDRange(start,end,confirm);
     }
 
     @Override
     public int deleteByMonthModification(int month, boolean confirm) {
-        return 0;
+        return currentDAO.deleteByMonthModification(month,confirm);
     }
 
     @Override
     public int deleteByCity(String city, boolean confirm) {
-        return 0;
+        return currentDAO.deleteByCity(city,confirm);
     }
 }
 

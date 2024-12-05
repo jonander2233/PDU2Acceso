@@ -22,7 +22,11 @@ public class Main {
         Eys.cambiarIdioma("en","EN");
         int options;
         do{
-            options = Menu.mostrar("POI",new String[]{"Change database:Using -> " + dm.getUsingDB(),"Add Poi","List","Update Poi","Delete"},"exit");
+            try {
+                options = Menu.mostrar("POI---nElements(" + dm.countElements() + ")",new String[]{"Change database:Using -> " + dm.getUsingDB(),"Add Poi","List","Update Poi","Delete"},"exit");
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
             switch (options){
                 case 0:
                     exit = true;
@@ -40,7 +44,11 @@ public class Main {
                 case 4:
                     break;
                 case 5:
-                    deletePoi();
+                    try {
+                        deletePoi();
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
                     break;
                 default:
                     break;
@@ -82,7 +90,7 @@ public class Main {
             }
         }while (!back);
     }
-    public static void deletePoi(){
+    public static void deletePoi() throws SQLException {
         ArrayList<Poi> pois = new ArrayList<>();
         int affectedElements;
         boolean back = false;
