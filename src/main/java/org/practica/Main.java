@@ -2,7 +2,6 @@ package org.practica;
 
 import org.jonander2233.lib_personal.Eys;
 import org.jonander2233.lib_personal.Menu;
-
 import org.practica.DAO.MongoPoiDAO;
 import org.practica.managers.DAOManager;
 import org.practica.models.Poi;
@@ -42,6 +41,7 @@ public class Main {
                     listPoi();
                     break;
                 case 4:
+                    updatePoi();
                     break;
                 case 5:
                     try {
@@ -56,7 +56,6 @@ public class Main {
         }while (!exit);
     }
     public static void listPoi(){
-        ArrayList<Poi> pois = new ArrayList<>();
         boolean back = false;
         int options;
         do {
@@ -66,22 +65,16 @@ public class Main {
                     back = true;
                     break;
                 case 1:
-                    try {
-                        pois = dm.listAll();
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                    for (Poi poi:pois) {
-                        System.out.println(poi);
-                        continuetext();
-                        pois.clear();
-                    }
+                    listAllPoi();
                     break;
                 case 2:
+                    listByIdRange();
                     break;
                 case 3:
+                    listByMonth();
                     break;
                 case 4:
+                    listByCity();
                     break;
                 case 5:
                     break;
@@ -108,6 +101,7 @@ public class Main {
                     continuetext();
                     break;
                 case 2:
+                    deletePoiByid();
                     break;
                 case 3:
                     break;
@@ -120,6 +114,107 @@ public class Main {
             }
         }while (!back);
     }
+
+
+
+    //list
+
+
+    private static void listByCity(){
+        String city = Eys.imprimirYLeer("Enter city",1,50);
+
+    }
+    private static void listByMonth(){
+        int month = Eys.imprimirYLeerInt("Month 1 to 12",1,12);
+        if(dm.listByMonthModification(month) != null){
+            System.out.println(dm.listByMonthModification(month).toString());
+        }else {
+            System.out.println("No Results founded");
+        }
+    }
+    private static void listByIdRange(){
+        int min = Eys.imprimirYLeerInt("id min",1,Integer.MAX_VALUE);
+        int max = Eys.imprimirYLeerInt("id max", min,Integer.MAX_VALUE);
+        try {
+            if(dm.listByIDRange(min,max) != null){
+                System.out.println(dm.listByIDRange(min,max).toString());
+            } else {
+                System.out.println("No Results founded");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private static void listAllPoi(){
+        ArrayList<Poi> pois = new ArrayList<>();
+        try {
+            pois = dm.listAll();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        for (Poi poi:pois) {
+            System.out.println(poi);
+            continuetext();
+            pois.clear();
+        }
+    }
+
+
+
+    //delete
+
+
+
+    private static void deletePoiByid(){
+        int id = Eys.imprimirYLeerInt("Poi id: type 0 to exit",0,Integer.MAX_VALUE);
+        if(id == 0)
+            break;
+        boolean confirm = Eys.ImprimirYleerCharSN("Confirm deletion of: " + dm.listOneById(id).toString() + "?");
+        if(confirm)
+            dm.deletePoiByID(id,true);
+    }
+
+
+
+    //update
+
+
+
+    private static void updatePoi(){
+        int id = Eys.imprimirYLeerInt("Poi id: type 0 to exit", 0, Integer.MAX_VALUE);
+        if (id != 0) {
+            Poi poi = null;
+            try {
+                poi = dm.listOneById(id);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            if (poi != null) {
+                System.out.println(poi);
+                boolean update = Eys.ImprimirYleerCharSN("Do you want to update this Poi?");
+                if (update) {
+                    Double latitude = Eys.imprimirYLeerDouble("Poi latitude");
+                    Double longitude = Eys.imprimirYLeerDouble("Poi longitude");
+                    String country = Eys.imprimirYLeer("Poi Country", 0, 50);
+                    String city = Eys.imprimirYLeer("Poi city", 0, 50);
+                    Date updateDate = Eys.imprimirYLeerDate("Poi last updated:");
+                    String description = Eys.imprimirYLeer("Poi description:", 0, Integer.MAX_VALUE);
+                    if(Eys.ImprimirYleerCharSN("Apply changes?")){
+                        dm.deletePoiByID(id,true);
+                        dm.addPoi(new Poi(id,latitude,longitude,country,city,description,updateDate));
+                    }
+                }
+            } else {
+                System.out.println("id: " + id + " doesn't contain any Poi");
+            }
+        }
+    }
+
+
+
+    //create
+
+
 
     private static void addPoi(){
         boolean exit=false;
@@ -147,7 +242,7 @@ public class Main {
                                 return;
                             poi.setPoiId(newId);
                         } else {
-                            System.out.println("Publication successfully added.");
+                            System.out.println("Poi successfully added.");
                             continuetext();
                             success = true;
                         }

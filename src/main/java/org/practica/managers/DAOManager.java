@@ -132,7 +132,7 @@ public class DAOManager implements CRUDInterfacePoi{
     }
 
     @Override
-    public int deletePoiByID(int id, boolean confirm) {
+    public Poi deletePoiByID(int id, boolean confirm) {
         return deletePoiByID(id,confirm);
     }
 

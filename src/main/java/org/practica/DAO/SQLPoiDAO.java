@@ -145,8 +145,8 @@ public class SQLPoiDAO implements CRUDInterfacePoi {
     }
 
     @Override
-    public int deletePoiByID(int id, boolean confirm) {
-        return 0;
+    public Poi deletePoiByID(int id, boolean confirm) {
+        return null;
     }
 
     @Override

@@ -18,7 +18,7 @@ public interface CRUDInterfacePoi {
     boolean updatePoiByID(Poi poi);
 
     int deleteAll(boolean confirm) throws SQLException;
-    int deletePoiByID(int id,boolean confirm);
+    Poi deletePoiByID(int id,boolean confirm);
     int deleteByIDRange(int start, int end,boolean confirm);
     int deleteByMonthModification(int month,boolean confirm);
     int deleteByCity(String city,boolean confirm);
