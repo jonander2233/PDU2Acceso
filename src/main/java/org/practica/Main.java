@@ -109,10 +109,8 @@ public class Main {
 
     private static void listAllPoi() throws SQLException {
         ArrayList<Poi> pois = dm.listAll();
-        pois.forEach(poi -> {
-            System.out.println(poi);
-            continuetext();
-        });
+        listPoiIO(pois);
+        continuetext();
     }
 
     private static void listById() throws SQLException {
@@ -131,35 +129,25 @@ public class Main {
     private static void listByIdRange() throws SQLException {
         int min = Eys.imprimirYLeerInt("id min", 1, Integer.MAX_VALUE);
         int max = Eys.imprimirYLeerInt("id max", min, Integer.MAX_VALUE);
-        ArrayList<Poi> pois = dm.listByIDRange(min, max);
-        if (pois != null && !pois.isEmpty()) {
-            pois.forEach(System.out::println);
-        } else {
-            System.out.println("No results found");
-        }
+        listPoiIO(dm.listByIDRange(min,max));
         continuetext();
     }
 
     private static void listByMonth() throws SQLException {
         int month = Eys.imprimirYLeerInt("Month 1 to 12", 1, 12);
-        ArrayList<Poi> pois = dm.listByMonthModification(month);
-        if (pois != null && !pois.isEmpty()) {
-            pois.forEach(System.out::println);
-        } else {
-            System.out.println("No results found");
-        }
+        listPoiIO(dm.listByMonthModification(month));
         continuetext();
     }
 
     private static void listByCity() throws SQLException {
         String city = Eys.imprimirYLeer("Enter city", 1, 50);
-        System.out.println(dm.listByCity(city));
+        listPoiIO(dm.listByCity(city));
         continuetext();
     }
 
     private static void listByCountry() throws SQLException {
         String country = Eys.imprimirYLeer("Enter Country", 1, Integer.MAX_VALUE);
-        System.out.println(dm.listByCountry(country));
+        listPoiIO(dm.listByCountry(country));
         continuetext();
     }
 
@@ -262,5 +250,15 @@ public class Main {
 
     private static void continuetext() {
         Eys.imprimirYLeer("Press enter to continue", 0, 0);
+    }
+
+    private static void listPoiIO(ArrayList<Poi> pois) {
+        if (pois != null && !pois.isEmpty()) {
+            for (int i = 0; i < pois.size(); i++) {
+                System.out.println(pois.get(i).toString() + "\n");
+            }
+        } else {
+            System.out.println("No results found");
+        }
     }
 }
