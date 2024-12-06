@@ -117,6 +117,12 @@ public class MongoPoiDAO implements CRUDInterfacePoi {
     public int deleteByCity(String city, boolean confirm) {
         return 0;
     }
+
+    @Override
+    public int deleteByCountry(String country, boolean confirm) {
+        return 0;
+    }
+
     private void poiToDocument(Poi poi){
         Document poiDoc = new Document("poiID",poi.getPoiId());
         if(poi.getCity() != "")

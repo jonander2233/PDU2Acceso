@@ -11,271 +11,216 @@ import java.util.Date;
 
 public class Main {
     private static DAOManager dm;
+
     public static void main(String[] args) {
-        System.out.println("Connecting to database, please wait...");
-        dm = DAOManager.getInstance();
-        boolean exit = false;
-        Menu.cambiarIdioma("en","EN");
-        Eys.cambiarIdioma("en","EN");
-        int options;
-        do{
-            try {
-                options = Menu.mostrar("POI---nElements(" + dm.countElements() + ")",new String[]{"Change database:Using -> " + dm.getUsingDB(),"Add Poi","List","Update Poi","Delete"},"exit");
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            switch (options){
-                case 0:
-                    exit = true;
-                    break;
-                case 1:
-                    System.out.println("Trying to connect to: " + dm.getNotUsingDB());
-                    dm.changedb();
-                    break;
-                case 2:
-                    addPoi();
-                    break;
-                case 3:
-                    listPoi();
-                    break;
-                case 4:
-                    updatePoi();
-                    break;
-                case 5:
-                    try {
-                        deletePoi();
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }while (!exit);
-    }
-    public static void listPoi(){
-        boolean back = false;
-        int options;
-        do {
-            options = Menu.mostrar("List Poi",new String[]{"List All","List one by id","List by id range","List by month modification","List by city","List by Country"},"back");
-            switch (options){
-                case 0:
-                    back = true;
-                    break;
-                case 1:
-                    listAllPoi();
-                    break;
-                case 2:
-                    listById();
-                    break;
-                case 3:
-                    listByIdRange();
-                    break;
-                case 4:
-                    listByMonth();
-                    break;
-                case 5:
-                    try {
-                        listByCity();
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                    break;
-                case 6:
-                    listByCountry();
-                    break;
-                default:
-                    break;
-            }
-        }while (!back);
-    }
-    public static void deletePoi() throws SQLException {
-        ArrayList<Poi> pois = new ArrayList<>();
-        int affectedElements;
-        boolean back = false;
-        int options;
-        do {
-            options = Menu.mostrar("Delete Poi",new String[]{"Delete All","Delete one by id","Delete by id range","Delete by month modification","Delete by city","Delete by Country"},"back");
-            switch (options){
-                case 0:
-                    back = true;
-                    break;
-                case 1:
-                    affectedElements = dm.deleteAll(false);
-                    if(Eys.ImprimirYleerCharSN("Do you want to confirm the deletion of " + affectedElements + " elements?"))
-                        dm.deleteAll(true);
-                    continuetext();
-                    break;
-                case 2:
-                    deletePoiByid();
-                    break;
-                case 3:
-                    deletePoiByidRange();
-                    break;
-                case 4:
-                    deletePoiByMonthModification();
-                    break;
-                case 5:
-                    deletePoiByCity();
-                    break;
-                case 6:
-                    deletePoiByCountry();
-                    break;
-                default:
-                    break;
-            }
-        }while (!back);
-    }
-
-
-
-    //list
-
-    private static void listByCountry(){
-        String country = Eys.imprimirYLeer("Enter Country",1,Integer.MAX_VALUE);
-        System.out.println(dm.listByCountry(country));
-        continuetext();
-    }
-    private static void listByCity() throws SQLException {
-        String city = Eys.imprimirYLeer("Enter city",1,50);
-        System.out.println(dm.listByCity(city));
-        continuetext();
-    }
-    private static void listByMonth(){
-        int month = Eys.imprimirYLeerInt("Month 1 to 12",1,12);
-        if(dm.listByMonthModification(month) != null){
-            System.out.println(dm.listByMonthModification(month).toString());
-        }else {
-            System.out.println("No Results founded");
-        }
-    }
-    private static void listByIdRange(){
-        int min = Eys.imprimirYLeerInt("id min",1,Integer.MAX_VALUE);
-        int max = Eys.imprimirYLeerInt("id max", min,Integer.MAX_VALUE);
         try {
-            if(dm.listByIDRange(min,max) != null){
-                System.out.println(dm.listByIDRange(min,max).toString());
-            } else {
-                System.out.println("No Results founded");
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println("Connecting to database, please wait...");
+            dm = DAOManager.getInstance();
+            Menu.cambiarIdioma("en", "EN");
+            Eys.cambiarIdioma("en", "EN");
+            runMenu();
+        } catch (Exception e) {
+            System.err.println("An unexpected error occurred: " + e.getMessage());
+            e.printStackTrace();
         }
+    }
+
+    private static void runMenu() throws SQLException {
+        boolean exit = false;
+        do {
+            int options = Menu.mostrar("POI---nElements(" + dm.countElements() + ")", new String[]{
+                    "Change database: Using -> " + dm.getUsingDB(),
+                    "Add Poi",
+                    "List",
+                    "Update Poi",
+                    "Delete"
+            }, "exit");
+
+            switch (options) {
+                case 0 -> exit = true;
+                case 1 -> changeDatabase();
+                case 2 -> addPoi();
+                case 3 -> listPoi();
+                case 4 -> updatePoi();
+                case 5 -> deletePoi();
+            }
+        } while (!exit);
+    }
+
+    private static void changeDatabase() {
+        System.out.println("Trying to connect to: " + dm.getNotUsingDB());
+        dm.changedb();
+    }
+
+    private static void listPoi() throws SQLException {
+        boolean back = false;
+        do {
+            int options = Menu.mostrar("List Poi", new String[]{
+                    "List All",
+                    "List one by id",
+                    "List by id range",
+                    "List by month modification",
+                    "List by city",
+                    "List by Country"
+            }, "back");
+
+            switch (options) {
+                case 0 -> back = true;
+                case 1 -> listAllPoi();
+                case 2 -> listById();
+                case 3 -> listByIdRange();
+                case 4 -> listByMonth();
+                case 5 -> listByCity();
+                case 6 -> listByCountry();
+            }
+        } while (!back);
+    }
+
+    private static void deletePoi() throws SQLException {
+        boolean back = false;
+        do {
+            int options = Menu.mostrar("Delete Poi", new String[]{
+                    "Delete All",
+                    "Delete one by id",
+                    "Delete by id range",
+                    "Delete by month modification",
+                    "Delete by city",
+                    "Delete by Country"
+            }, "back");
+
+            switch (options) {
+                case 0 -> back = true;
+                case 1 -> deleteAllPois();
+                case 2 -> deletePoiById();
+                case 3 -> deletePoiByIdRange();
+                case 4 -> deletePoiByMonthModification();
+                case 5 -> deletePoiByCity();
+                case 6 -> deletePoiByCountry();
+            }
+        } while (!back);
+    }
+
+    private static void deleteAllPois() throws SQLException {
+        int affectedElements = dm.deleteAll(false);
+        if (Eys.ImprimirYleerCharSN("Do you want to confirm the deletion of " + affectedElements + " elements?"))
+            dm.deleteAll(true);
+        continuetext();
+    }
+
+    private static void listAllPoi() throws SQLException {
+        ArrayList<Poi> pois = dm.listAll();
+        pois.forEach(poi -> {
+            System.out.println(poi);
+            continuetext();
+        });
     }
 
     private static void listById() throws SQLException {
-        int id = Eys.imprimirYLeerInt("Poi id: type 0 to exit",0,Integer.MAX_VALUE);
-        if(id == 0) return;
-        if(dm.listOneById(id) == null){
-            System.out.println("No results found");
+        int id = Eys.imprimirYLeerInt("Poi id: type 0 to exit", 0, Integer.MAX_VALUE);
+        if (id != 0) {
+            Poi poi = dm.listOneById(id);
+            if (poi != null) {
+                System.out.println("Poi: " + poi);
+            } else {
+                System.out.println("No results found");
+            }
+            continuetext();
+        }
+    }
+
+    private static void listByIdRange() throws SQLException {
+        int min = Eys.imprimirYLeerInt("id min", 1, Integer.MAX_VALUE);
+        int max = Eys.imprimirYLeerInt("id max", min, Integer.MAX_VALUE);
+        ArrayList<Poi> pois = dm.listByIDRange(min, max);
+        if (pois != null && !pois.isEmpty()) {
+            pois.forEach(System.out::println);
         } else {
-            System.out.println("Poi: " + dm.listOneById(id));
+            System.out.println("No results found");
         }
         continuetext();
     }
-    private static void listAllPoi(){
-        ArrayList<Poi> pois = new ArrayList<>();
-        try {
-            pois = dm.listAll();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+
+    private static void listByMonth() throws SQLException {
+        int month = Eys.imprimirYLeerInt("Month 1 to 12", 1, 12);
+        ArrayList<Poi> pois = dm.listByMonthModification(month);
+        if (pois != null && !pois.isEmpty()) {
+            pois.forEach(System.out::println);
+        } else {
+            System.out.println("No results found");
         }
-        for (Poi poi:pois) {
-            System.out.println(poi);
-            continuetext();
-            pois.clear();
+        continuetext();
+    }
+
+    private static void listByCity() throws SQLException {
+        String city = Eys.imprimirYLeer("Enter city", 1, 50);
+        System.out.println(dm.listByCity(city));
+        continuetext();
+    }
+
+    private static void listByCountry() throws SQLException {
+        String country = Eys.imprimirYLeer("Enter Country", 1, Integer.MAX_VALUE);
+        System.out.println(dm.listByCountry(country));
+        continuetext();
+    }
+
+    private static void deletePoiById() throws SQLException {
+        int id = Eys.imprimirYLeerInt("Poi id: type 0 to exit", 0, Integer.MAX_VALUE);
+        if (id != 0) {
+            Poi poi = dm.listOneById(id);
+            if (poi != null && Eys.ImprimirYleerCharSN("Confirm deletion of: " + poi + "?")) {
+                dm.deletePoiByID(id, true);
+            }
         }
     }
 
-
-
-    //delete
-
-
-
-
+    private static void deletePoiByIdRange() throws SQLException {
+        int idMin = Eys.imprimirYLeerInt("id min", 1, Integer.MAX_VALUE);
+        int idMax = Eys.imprimirYLeerInt("id max", idMin, Integer.MAX_VALUE);
+        ArrayList<Poi> pois = dm.listByIDRange(idMin, idMax);
+        if (pois != null && !pois.isEmpty() && Eys.ImprimirYleerCharSN("Are you sure you want to delete these Pois?")) {
+            dm.deleteByIDRange(idMin, idMax, true);
+        }
+    }
 
     private static void deletePoiByCity() throws SQLException {
-        String city = Eys.imprimirYLeer("Enter city",1,50);
-        boolean confirm = Eys.ImprimirYleerCharSN("Are you sure you want to delete " + dm.deleteByCity(city,false)+ " items?");
-        if(confirm){
-            dm.deleteByCity(city,true);
+        String city = Eys.imprimirYLeer("Enter city", 1, 50);
+        if (Eys.ImprimirYleerCharSN("Are you sure you want to delete " + dm.deleteByCity(city, false) + " items?")) {
+            dm.deleteByCity(city, true);
         }
         continuetext();
     }
 
     private static void deletePoiByCountry() throws SQLException {
-        String country = Eys.imprimirYLeer("Enter Country",1,50);
-        boolean confirm = Eys.ImprimirYleerCharSN("Are you sure you want to delete " + dm.deleteByCountry(country,false)+ " items?");
-        if(confirm){
-            dm.deleteByCountry(country,true);
+        String country = Eys.imprimirYLeer("Enter Country", 1, 50);
+        if (Eys.ImprimirYleerCharSN("Are you sure you want to delete " + dm.deleteByCountry(country, false) + " items?")) {
+            dm.deleteByCountry(country, true);
         }
         continuetext();
     }
 
     private static void deletePoiByMonthModification() throws SQLException {
-        int month = Eys.imprimirYLeerInt("Month 1 to 12",1,12);
-        if(dm.listByMonthModification(month) != null){
-            boolean confirm = Eys.ImprimirYleerCharSN("Are you sure you want to delete "+ dm.deleteByMonthModification(month,false) +" items ?");
-            if(confirm){
-                dm.deleteByMonthModification(month,true);
-            }
-        }else {
-            System.out.println("No Results founded");
+        int month = Eys.imprimirYLeerInt("Month 1 to 12", 1, 12);
+        if (Eys.ImprimirYleerCharSN("Are you sure you want to delete " + dm.deleteByMonthModification(month, false) + " items?")) {
+            dm.deleteByMonthModification(month, true);
         }
-        continuetext();
-    }
-    private static void deletePoiByidRange() throws SQLException {
-        int idMin = Eys.imprimirYLeerInt("id min",1,Integer.MAX_VALUE);
-        int idMax = Eys.imprimirYLeerInt("id max", idMin,Integer.MAX_VALUE);
-        if(dm.listByIDRange(idMin,idMax) == null){
-            System.out.println("No results found");
-        } else {
-            System.out.println(dm.listByIDRange(idMin,idMax));
-            boolean confirm = Eys.ImprimirYleerCharSN("Are you sure you want to delete them?");
-            if(confirm){
-                dm.deleteByIDRange(idMin,idMax,true);
-            }
-        }
-        continuetext();
     }
 
-    private static void deletePoiByid() throws SQLException {
-        int id = Eys.imprimirYLeerInt("Poi id: type 0 to exit",0,Integer.MAX_VALUE);
-        if(id == 0) return;
-        boolean confirm = Eys.ImprimirYleerCharSN("Confirm deletion of: " + dm.listOneById(id).toString() + "?");
-        if(confirm)
-            dm.deletePoiByID(id,true);
-    }
-
-
-
-    //update
-
-
-
-    private static void updatePoi(){
+    private static void updatePoi() throws SQLException {
         int id = Eys.imprimirYLeerInt("Poi id: type 0 to exit", 0, Integer.MAX_VALUE);
         if (id != 0) {
-            Poi poi = null;
-            try {
-                poi = dm.listOneById(id);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+            Poi poi = dm.listOneById(id);
             if (poi != null) {
                 System.out.println(poi);
-                boolean update = Eys.ImprimirYleerCharSN("Do you want to update this Poi?");
-                if (update) {
+                if (Eys.ImprimirYleerCharSN("Do you want to update this Poi?")) {
                     Double latitude = Eys.imprimirYLeerDouble("Poi latitude");
                     Double longitude = Eys.imprimirYLeerDouble("Poi longitude");
                     String country = Eys.imprimirYLeer("Poi Country", 0, 50);
                     String city = Eys.imprimirYLeer("Poi city", 0, 50);
                     Date updateDate = Eys.imprimirYLeerDate("Poi last updated:");
                     String description = Eys.imprimirYLeer("Poi description:", 0, Integer.MAX_VALUE);
-                    if(Eys.ImprimirYleerCharSN("Apply changes?")){
-                        dm.deletePoiByID(id,true);
-                        dm.addPoi(new Poi(id,latitude,longitude,country,city,description,updateDate));
+                    if (Eys.ImprimirYleerCharSN("Apply changes?")) {
+                        dm.deletePoiByID(id, true);
+                        dm.addPoi(new Poi(id, latitude, longitude, country, city, description, updateDate));
                     }
                 }
             } else {
@@ -284,51 +229,38 @@ public class Main {
         }
     }
 
-
-
-    //create
-
-
-
-    private static void addPoi(){
-        boolean exit=false;
-        do{
-            int id = Eys.imprimirYLeerInt("Poi id: type 0 to exit",0 , Integer.MAX_VALUE);
-            if(id != 0 ){
+    private static void addPoi() throws SQLException {
+        boolean exit = false;
+        do {
+            int id = Eys.imprimirYLeerInt("Poi id: type 0 to exit", 0, Integer.MAX_VALUE);
+            if (id == 0) {
+                exit = true;
+            } else {
                 Double latitude = Eys.imprimirYLeerDouble("Poi latitude");
                 Double longitude = Eys.imprimirYLeerDouble("Poi longitude");
-                String country = Eys.imprimirYLeer("Poi Country",0,50);
-                String city = Eys.imprimirYLeer("Poi city",0,50);
-
+                String country = Eys.imprimirYLeer("Poi Country", 0, 50);
+                String city = Eys.imprimirYLeer("Poi city", 0, 50);
                 Date date = Eys.imprimirYLeerDate("Poi last updated:");
-                String description = Eys.imprimirYLeer("Poi description:",0,Integer.MAX_VALUE);
-                Poi poi = new Poi(id,latitude,longitude,country,city,description,date);
-                System.out.println(poi.toString());
+                String description = Eys.imprimirYLeer("Poi description:", 0, Integer.MAX_VALUE);
+                Poi poi = new Poi(id, latitude, longitude, country, city, description, date);
 
-                boolean add = Eys.ImprimirYleerCharSN("Confirm insertion?");
-                if(add){
-                    boolean success = false;
-                    while (!success){
-                        if(!dm.addPoi(poi)){
-                            System.out.println("Error inserting Poi, duplicate ID found:" + poi.getPoiId());
-                            int newId = Eys.imprimirYLeerInt("Enter new ID: or enter 0 to cancel", 0, Integer.MAX_VALUE);
-                            if(newId == 0)
-                                return;
-                            poi.setPoiId(newId);
-                        } else {
-                            System.out.println("Poi successfully added.");
-                            continuetext();
-                            success = true;
-                        }
+                boolean success = false;
+                while (!success) {
+                    if (!dm.addPoi(poi)) {
+                        System.out.println("Error inserting Poi, duplicate ID found: " + poi.getPoiId());
+                        id = Eys.imprimirYLeerInt("Enter new ID: or enter 0 to cancel", 0, Integer.MAX_VALUE);
+                        if (id == 0) return;
+                        poi.setPoiId(id);
+                    } else {
+                        System.out.println("Poi successfully added.");
+                        success = true;
                     }
                 }
-            }else {
-                exit = true;
             }
-        }while (!exit);
+        } while (!exit);
     }
 
     private static void continuetext() {
-        Eys.imprimirYLeer("Press enter to continue",0,0);
+        Eys.imprimirYLeer("Press enter to continue", 0, 0);
     }
 }
