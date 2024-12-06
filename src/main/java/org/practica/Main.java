@@ -207,8 +207,7 @@ public class Main {
                     Date updateDate = Eys.imprimirYLeerDate("Poi last updated:");
                     String description = Eys.imprimirYLeer("Poi description:", 0, Integer.MAX_VALUE);
                     if (Eys.ImprimirYleerCharSN("Apply changes?")) {
-                        dm.deletePoiByID(id, true);
-                        dm.addPoi(new Poi(id, latitude, longitude, country, city, description, updateDate));
+                        dm.updatePoiByID(new Poi(id, latitude, longitude, country, city, description, updateDate));
                     }
                 }
             } else {

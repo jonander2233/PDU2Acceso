@@ -20,6 +20,7 @@ public class Poi {
         this.city = city;
         this.description = description;
         this.updateDate = updateDate;
+        this.country = country;
     }
 
     public void setPoiId(int poiId) {
@@ -62,6 +63,7 @@ public class Poi {
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
                 ", city='" + city + '\'' +
+                ", country='" + country + '\'' +
                 ", description='" + description + '\'' +
                 ", updateDate=" + updateDate +
                 '}';
