@@ -122,6 +122,11 @@ public class DAOManager implements CRUDInterfacePoi{
     }
 
     @Override
+    public ArrayList<Poi> listByCountry(String country) {
+        return null;
+    }
+
+    @Override
     public boolean updatePoiByID(Poi poi) {
         return currentDAO.updatePoiByID(poi);
     }

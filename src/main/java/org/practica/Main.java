@@ -2,11 +2,9 @@ package org.practica;
 
 import org.jonander2233.lib_personal.Eys;
 import org.jonander2233.lib_personal.Menu;
-import org.practica.DAO.MongoPoiDAO;
 import org.practica.managers.DAOManager;
 import org.practica.models.Poi;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -59,7 +57,7 @@ public class Main {
         boolean back = false;
         int options;
         do {
-            options = Menu.mostrar("List Poi",new String[]{"List All","List one by id","List by id range","List by month modification","List by city"},"back");
+            options = Menu.mostrar("List Poi",new String[]{"List All","List one by id","List by id range","List by month modification","List by city","List by Country"},"back");
             switch (options){
                 case 0:
                     back = true;
@@ -68,15 +66,23 @@ public class Main {
                     listAllPoi();
                     break;
                 case 2:
-                    listByIdRange();
+                    listById();
                     break;
                 case 3:
-                    listByMonth();
+                    listByIdRange();
                     break;
                 case 4:
-                    listByCity();
+                    listByMonth();
                     break;
                 case 5:
+                    try {
+                        listByCity();
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    break;
+                case 6:
+                    listByCountry();
                     break;
                 default:
                     break;
@@ -89,7 +95,7 @@ public class Main {
         boolean back = false;
         int options;
         do {
-            options = Menu.mostrar("Delete Poi",new String[]{"Delete All","Delete one by id","Delete by id range","Delete by month modification","Delete by city"},"back");
+            options = Menu.mostrar("Delete Poi",new String[]{"Delete All","Delete one by id","Delete by id range","Delete by month modification","Delete by city","Delete by Country"},"back");
             switch (options){
                 case 0:
                     back = true;
@@ -104,10 +110,16 @@ public class Main {
                     deletePoiByid();
                     break;
                 case 3:
+                    deletePoiByidRange();
                     break;
                 case 4:
+                    deletePoiByMonthModification();
                     break;
                 case 5:
+                    deletePoiByCity();
+                    break;
+                case 6:
+                    deletePoiByCountry();
                     break;
                 default:
                     break;
@@ -119,10 +131,15 @@ public class Main {
 
     //list
 
-
-    private static void listByCity(){
+    private static void listByCountry(){
+        String country = Eys.imprimirYLeer("Enter Country",1,Integer.MAX_VALUE);
+        System.out.println(dm.listByCountry(country));
+        continuetext();
+    }
+    private static void listByCity() throws SQLException {
         String city = Eys.imprimirYLeer("Enter city",1,50);
-
+        System.out.println(dm.listByCity(city));
+        continuetext();
     }
     private static void listByMonth(){
         int month = Eys.imprimirYLeerInt("Month 1 to 12",1,12);
@@ -145,6 +162,17 @@ public class Main {
             throw new RuntimeException(e);
         }
     }
+
+    private static void listById() throws SQLException {
+        int id = Eys.imprimirYLeerInt("Poi id: type 0 to exit",0,Integer.MAX_VALUE);
+        if(id == 0) return;
+        if(dm.listOneById(id) == null){
+            System.out.println("No results found");
+        } else {
+            System.out.println("Poi: " + dm.listOneById(id));
+        }
+        continuetext();
+    }
     private static void listAllPoi(){
         ArrayList<Poi> pois = new ArrayList<>();
         try {
@@ -165,10 +193,56 @@ public class Main {
 
 
 
-    private static void deletePoiByid(){
+
+
+    private static void deletePoiByCity() throws SQLException {
+        String city = Eys.imprimirYLeer("Enter city",1,50);
+        boolean confirm = Eys.ImprimirYleerCharSN("Are you sure you want to delete " + dm.deleteByCity(city,false)+ " items?");
+        if(confirm){
+            dm.deleteByCity(city,true);
+        }
+        continuetext();
+    }
+
+    private static void deletePoiByCountry() throws SQLException {
+        String country = Eys.imprimirYLeer("Enter Country",1,50);
+        boolean confirm = Eys.ImprimirYleerCharSN("Are you sure you want to delete " + dm.deleteByCountry(country,false)+ " items?");
+        if(confirm){
+            dm.deleteByCountry(country,true);
+        }
+        continuetext();
+    }
+
+    private static void deletePoiByMonthModification() throws SQLException {
+        int month = Eys.imprimirYLeerInt("Month 1 to 12",1,12);
+        if(dm.listByMonthModification(month) != null){
+            boolean confirm = Eys.ImprimirYleerCharSN("Are you sure you want to delete "+ dm.deleteByMonthModification(month,false) +" items ?");
+            if(confirm){
+                dm.deleteByMonthModification(month,true);
+            }
+        }else {
+            System.out.println("No Results founded");
+        }
+        continuetext();
+    }
+    private static void deletePoiByidRange() throws SQLException {
+        int idMin = Eys.imprimirYLeerInt("id min",1,Integer.MAX_VALUE);
+        int idMax = Eys.imprimirYLeerInt("id max", idMin,Integer.MAX_VALUE);
+        if(dm.listByIDRange(idMin,idMax) == null){
+            System.out.println("No results found");
+        } else {
+            System.out.println(dm.listByIDRange(idMin,idMax));
+            boolean confirm = Eys.ImprimirYleerCharSN("Are you sure you want to delete them?");
+            if(confirm){
+                dm.deleteByIDRange(idMin,idMax,true);
+            }
+        }
+        continuetext();
+    }
+
+    private static void deletePoiByid() throws SQLException {
         int id = Eys.imprimirYLeerInt("Poi id: type 0 to exit",0,Integer.MAX_VALUE);
-        if(id == 0)
-            break;
+        if(id == 0) return;
         boolean confirm = Eys.ImprimirYleerCharSN("Confirm deletion of: " + dm.listOneById(id).toString() + "?");
         if(confirm)
             dm.deletePoiByID(id,true);

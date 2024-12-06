@@ -84,6 +84,11 @@ public class MongoPoiDAO implements CRUDInterfacePoi {
     }
 
     @Override
+    public ArrayList<Poi> listByCountry(String country) {
+        return null;
+    }
+
+    @Override
     public boolean updatePoiByID(Poi poi) {
         return false;
     }

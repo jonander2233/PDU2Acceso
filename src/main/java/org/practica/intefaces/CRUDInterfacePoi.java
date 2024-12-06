@@ -14,6 +14,8 @@ public interface CRUDInterfacePoi {
     ArrayList<Poi> listByIDRange(int start, int end) throws SQLException;
     ArrayList<Poi> listByMonthModification(int month);
     ArrayList<Poi> listByCity(String city) throws SQLException;
+    ArrayList<Poi> listByCountry(String country);
+
 
     boolean updatePoiByID(Poi poi);
 
@@ -22,6 +24,7 @@ public interface CRUDInterfacePoi {
     int deleteByIDRange(int start, int end,boolean confirm);
     int deleteByMonthModification(int month,boolean confirm);
     int deleteByCity(String city,boolean confirm);
+    int deleteByCountry(String country,boolean confirm);
 
 
 
