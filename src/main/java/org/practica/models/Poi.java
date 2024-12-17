@@ -2,7 +2,9 @@ package org.practica.models;
 
 import org.bson.Document;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Poi {
     private int poiId;
@@ -12,6 +14,7 @@ public class Poi {
     private String country;
     private String description;
     private Date updateDate;
+    private List<Tpoi> tpois;
 
     public Poi(int poiId, Double latitude, Double longitude,String country, String city, String description, Date updateDate) {
         this.poiId = poiId;
@@ -21,8 +24,12 @@ public class Poi {
         this.description = description;
         this.updateDate = updateDate;
         this.country = country;
+        tpois = new ArrayList<>();
     }
-
+    public void addTpoi(Tpoi tpoi){
+        tpoi.setFkPoiId(this.poiId);
+        tpois.add(tpoi);
+    }
     public void setPoiId(int poiId) {
         this.poiId = poiId;
     }

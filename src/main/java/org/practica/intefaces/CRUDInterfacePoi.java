@@ -2,29 +2,29 @@ package org.practica.intefaces;
 
 import org.practica.models.Poi;
 
-import java.sql.SQLException;
+import java.lang.Exception;
 import java.util.ArrayList;
 
 public interface CRUDInterfacePoi {
-    int countElements() throws SQLException;
-    boolean addPoi(Poi poi) throws SQLException;
+    int countElements() throws Exception;
+    boolean addPoi(Poi poi) throws Exception;
 
-    ArrayList<Poi> listAll() throws SQLException;
-    Poi listOneById(int id) throws SQLException;
-    ArrayList<Poi> listByIDRange(int start, int end) throws SQLException;
-    ArrayList<Poi> listByMonthModification(int month) throws SQLException;
-    ArrayList<Poi> listByCity(String city) throws SQLException;
-    ArrayList<Poi> listByCountry(String country) throws SQLException;
+    ArrayList<Poi> listAll() throws Exception;
+    Poi listOneById(int id) throws Exception;
+    ArrayList<Poi> listByIDRange(int start, int end) throws Exception;
+    ArrayList<Poi> listByMonthModification(int month) throws Exception;
+    ArrayList<Poi> listByCity(String city) throws Exception;
+    ArrayList<Poi> listByCountry(String country) throws Exception;
 
 
-    boolean updatePoiByID(Poi poi) throws SQLException;
+    boolean updatePoiByID(Poi poi) throws Exception;
 
-    int deleteAll(boolean confirm) throws SQLException;
-    Poi deletePoiByID(int id,boolean confirm) throws SQLException;
-    int deleteByIDRange(int start, int end,boolean confirm) throws SQLException;
-    int deleteByMonthModification(int month,boolean confirm) throws SQLException;
-    int deleteByCity(String city,boolean confirm) throws SQLException;
-    int deleteByCountry(String country,boolean confirm) throws SQLException;
+    int deleteAll(boolean confirm) throws Exception;
+    Poi deletePoiByID(int id,boolean confirm) throws Exception;
+    int deleteByIDRange(int start, int end,boolean confirm) throws Exception;
+    int deleteByMonthModification(int month,boolean confirm) throws Exception;
+    int deleteByCity(String city,boolean confirm) throws Exception;
+    int deleteByCountry(String country,boolean confirm) throws Exception;
 
 
 

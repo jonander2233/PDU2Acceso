@@ -25,7 +25,7 @@ public class Main {
         }
     }
 
-    private static void runMenu() throws SQLException {
+    private static void runMenu() throws Exception {
         boolean exit = false;
         do {
             int options = Menu.mostrar("POI---nElements(" + dm.countElements() + ")", new String[]{
@@ -52,7 +52,7 @@ public class Main {
         dm.changedb();
     }
 
-    private static void listPoi() throws SQLException {
+    private static void listPoi() throws Exception {
         boolean back = false;
         do {
             int options = Menu.mostrar("List Poi", new String[]{
@@ -76,7 +76,7 @@ public class Main {
         } while (!back);
     }
 
-    private static void deletePoi() throws SQLException {
+    private static void deletePoi() throws Exception {
         boolean back = false;
         do {
             int options = Menu.mostrar("Delete Poi", new String[]{
@@ -100,20 +100,20 @@ public class Main {
         } while (!back);
     }
 
-    private static void deleteAllPois() throws SQLException {
+    private static void deleteAllPois() throws Exception {
         int affectedElements = dm.deleteAll(false);
         if (Eys.ImprimirYleerCharSN("Do you want to confirm the deletion of " + affectedElements + " elements?"))
             dm.deleteAll(true);
         continuetext();
     }
 
-    private static void listAllPoi() throws SQLException {
+    private static void listAllPoi() throws Exception {
         ArrayList<Poi> pois = dm.listAll();
         listPoiIO(pois);
         continuetext();
     }
 
-    private static void listById() throws SQLException {
+    private static void listById() throws Exception {
         int id = Eys.imprimirYLeerInt("Poi id: type 0 to exit", 0, Integer.MAX_VALUE);
         if (id != 0) {
             Poi poi = dm.listOneById(id);
@@ -126,32 +126,32 @@ public class Main {
         }
     }
 
-    private static void listByIdRange() throws SQLException {
+    private static void listByIdRange() throws Exception {
         int min = Eys.imprimirYLeerInt("id min", 1, Integer.MAX_VALUE);
         int max = Eys.imprimirYLeerInt("id max", min, Integer.MAX_VALUE);
         listPoiIO(dm.listByIDRange(min,max));
         continuetext();
     }
 
-    private static void listByMonth() throws SQLException {
+    private static void listByMonth() throws Exception {
         int month = Eys.imprimirYLeerInt("Month 1 to 12", 1, 12);
         listPoiIO(dm.listByMonthModification(month));
         continuetext();
     }
 
-    private static void listByCity() throws SQLException {
+    private static void listByCity() throws Exception {
         String city = Eys.imprimirYLeer("Enter city", 1, 50);
         listPoiIO(dm.listByCity(city));
         continuetext();
     }
 
-    private static void listByCountry() throws SQLException {
+    private static void listByCountry() throws Exception {
         String country = Eys.imprimirYLeer("Enter Country", 1, Integer.MAX_VALUE);
         listPoiIO(dm.listByCountry(country));
         continuetext();
     }
 
-    private static void deletePoiById() throws SQLException {
+    private static void deletePoiById() throws Exception {
         int id = Eys.imprimirYLeerInt("Poi id: type 0 to exit", 0, Integer.MAX_VALUE);
         if (id != 0) {
             Poi poi = dm.listOneById(id);
@@ -161,7 +161,7 @@ public class Main {
         }
     }
 
-    private static void deletePoiByIdRange() throws SQLException {
+    private static void deletePoiByIdRange() throws Exception {
         int idMin = Eys.imprimirYLeerInt("id min", 1, Integer.MAX_VALUE);
         int idMax = Eys.imprimirYLeerInt("id max", idMin, Integer.MAX_VALUE);
         ArrayList<Poi> pois = dm.listByIDRange(idMin, idMax);
@@ -170,7 +170,7 @@ public class Main {
         }
     }
 
-    private static void deletePoiByCity() throws SQLException {
+    private static void deletePoiByCity() throws Exception {
         String city = Eys.imprimirYLeer("Enter city", 1, 50);
         if (Eys.ImprimirYleerCharSN("Are you sure you want to delete " + dm.deleteByCity(city, false) + " items?")) {
             dm.deleteByCity(city, true);
@@ -178,7 +178,7 @@ public class Main {
         continuetext();
     }
 
-    private static void deletePoiByCountry() throws SQLException {
+    private static void deletePoiByCountry() throws Exception {
         String country = Eys.imprimirYLeer("Enter Country", 1, 50);
         if (Eys.ImprimirYleerCharSN("Are you sure you want to delete " + dm.deleteByCountry(country, false) + " items?")) {
             dm.deleteByCountry(country, true);
@@ -186,14 +186,14 @@ public class Main {
         continuetext();
     }
 
-    private static void deletePoiByMonthModification() throws SQLException {
+    private static void deletePoiByMonthModification() throws Exception {
         int month = Eys.imprimirYLeerInt("Month 1 to 12", 1, 12);
         if (Eys.ImprimirYleerCharSN("Are you sure you want to delete " + dm.deleteByMonthModification(month, false) + " items?")) {
             dm.deleteByMonthModification(month, true);
         }
     }
 
-    private static void updatePoi() throws SQLException {
+    private static void updatePoi() throws Exception {
         int id = Eys.imprimirYLeerInt("Poi id: type 0 to exit", 0, Integer.MAX_VALUE);
         if (id != 0) {
             Poi poi = dm.listOneById(id);

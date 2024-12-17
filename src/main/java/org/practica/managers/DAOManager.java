@@ -4,6 +4,7 @@ import org.practica.DAO.MongoPoiDAO;
 import org.practica.DAO.SQLPoiDAO;
 import org.practica.intefaces.CRUDInterfacePoi;
 import org.practica.models.Poi;
+import org.practica.models.Tpoi;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -83,7 +84,7 @@ public class DAOManager implements CRUDInterfacePoi{
     }
 
     @Override
-    public int countElements() throws SQLException {
+    public int countElements() throws Exception {
         return currentDAO.countElements();
     }
 
@@ -91,48 +92,48 @@ public class DAOManager implements CRUDInterfacePoi{
     public boolean addPoi(Poi poi) {
         try {
             return currentDAO.addPoi(poi);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public ArrayList<Poi> listAll() throws SQLException {
+    public ArrayList<Poi> listAll() throws Exception {
         return currentDAO.listAll();
     }
 
     @Override
-    public Poi listOneById(int id) throws SQLException {
+    public Poi listOneById(int id) throws Exception {
         return currentDAO.listOneById(id);
     }
 
     @Override
-    public ArrayList<Poi> listByIDRange(int start, int end) throws SQLException {
+    public ArrayList<Poi> listByIDRange(int start, int end) throws Exception {
         return currentDAO.listByIDRange(start,end);
     }
 
     @Override
-    public ArrayList<Poi> listByMonthModification(int month) throws SQLException {
+    public ArrayList<Poi> listByMonthModification(int month) throws Exception {
         return currentDAO.listByMonthModification(month);
     }
 
     @Override
-    public ArrayList<Poi> listByCity(String city) throws SQLException {
+    public ArrayList<Poi> listByCity(String city) throws Exception {
         return currentDAO.listByCity(city);
     }
 
     @Override
-    public ArrayList<Poi> listByCountry(String country) throws SQLException {
+    public ArrayList<Poi> listByCountry(String country) throws Exception {
         return currentDAO.listByCountry(country);
     }
 
     @Override
-    public boolean updatePoiByID(Poi poi) throws SQLException {
+    public boolean updatePoiByID(Poi poi) throws Exception {
         return currentDAO.updatePoiByID(poi);
     }
 
     @Override
-    public int deleteAll(boolean confirm) throws SQLException {
+    public int deleteAll(boolean confirm) throws Exception {
         return currentDAO.deleteAll(confirm);
     }
 
@@ -142,22 +143,22 @@ public class DAOManager implements CRUDInterfacePoi{
     }
 
     @Override
-    public int deleteByIDRange(int start, int end, boolean confirm) throws SQLException {
+    public int deleteByIDRange(int start, int end, boolean confirm) throws Exception {
         return currentDAO.deleteByIDRange(start,end,confirm);
     }
 
     @Override
-    public int deleteByMonthModification(int month, boolean confirm) throws SQLException {
+    public int deleteByMonthModification(int month, boolean confirm) throws Exception {
         return currentDAO.deleteByMonthModification(month,confirm);
     }
 
     @Override
-    public int deleteByCity(String city, boolean confirm) throws SQLException {
+    public int deleteByCity(String city, boolean confirm) throws Exception {
         return currentDAO.deleteByCity(city,confirm);
     }
 
     @Override
-    public int deleteByCountry(String country, boolean confirm) throws SQLException {
+    public int deleteByCountry(String country, boolean confirm) throws Exception {
         return currentDAO.deleteByCountry(country,confirm);
     }
 }

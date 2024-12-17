@@ -96,7 +96,7 @@ public class SQLPoiDAO implements CRUDInterfacePoi {
         if (poi.isEmpty()) {
             return null;
         }
-        return poi.get(0);
+        return poi.getFirst();
     }
 
     @Override
